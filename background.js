@@ -2,7 +2,7 @@ let headers;
 let timeout;
 const notified = [];
 
-const studiesURL = 'https://www.prolific.ac/api/v1/studies/?current=1';
+const studiesURL = 'https://www.prolific.co/api/v1/studies/?current=1';
 
 const toMoney = (n) => (n / 100).toFixed(2);
 
@@ -76,27 +76,12 @@ const setBadgeError = () => {
 
 function notification(study) {
   chrome.notifications.create(study.id, {
-    type: 'list',
+    type: 'basic',
     title: study.name,
-    message: '',
+    message: 'Hosted by ' + study.researcher.name + 
+    '\nReward ' + toMoney(study.reward) + " | Avg. " + toMoney(study.average_reward_per_hour) + 
+    '\nPlaces ' + (study.total_available_places - study.places_taken),
     iconUrl: '/prolific.png',
-    items: [
-      {
-        title: 'Hosted By',
-        message: study.researcher.name,
-      },
-      {
-        title: 'Reward',
-        message: `${toMoney(study.reward)} | Avg. ${toMoney(
-          study.average_reward_per_hour,
-        )}`,
-      },
-      {
-        title: 'Places',
-        message: `${study.total_available_places - study.places_taken}`,
-      },
-    ],
-    buttons: [{ title: 'Open' }],
   });
 }
 
@@ -156,7 +141,7 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 chrome.notifications.onButtonClicked.addListener((notificationId) => {
-  window.open(`https://app.prolific.ac/studies/${notificationId}`);
+  window.open(`https://app.prolific.co/studies/${notificationId}`);
   chrome.notifications.clear(notificationId);
 });
 
@@ -175,7 +160,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     return {};
   },
-  { urls: ['https://www.prolific.ac/api/v1/studies*'] },
+  { urls: ['https://www.prolific.co/api/v1/studies*'] },
   ['blocking', 'requestHeaders'],
 );
 
