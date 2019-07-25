@@ -30,7 +30,7 @@
     "notifications",
     "webRequest",
     "webRequestBlocking",
-    "*://*.prolific.ac/*"
+    "*://*.prolific.co/*"
   ],
 
   "short_name": "PA"
