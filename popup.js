@@ -97,10 +97,11 @@ document.addEventListener('change', (event) => {
         audio.play();
         break;
       case 'voice':
-        chrome.tts.speak('Test: New studies available on Prolific.', {
-          enqueue: true,
-          voiceName: 'Google US English',
-        });
+        var synth = window.speechSynthesis;
+        var voices = synth.getVoices();
+        var utterThis = new SpeechSynthesisUtterance('New studies available on Prolific.');
+        utterThis.voice = voices[0];
+        synth.speak(utterThis);
         break;
     }
   }
