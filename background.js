@@ -2,7 +2,7 @@ let headers;
 let timeout;
 const notified = [];
 
-const studiesURL = 'https://www.prolific.ac/api/v1/studies/?current=1';
+const studiesURL = 'https://www.prolific.co/api/v1/studies/?current=1';
 
 const toMoney = (n) => (n / 100).toFixed(2);
 
@@ -20,7 +20,7 @@ const getStorage = (key) =>
  */
 const getIntervalFromStorage = () =>
   new Promise(async (resolve) => {
-    const interval = await getStorage('options');
+    const { interval } = (await getStorage('options')) || { interval: 60 };
     const ms = interval >= 60 ? interval * 1000 : 60 * 1000;
     resolve(ms);
   });
@@ -111,12 +111,25 @@ async function announceStudies(studies) {
 
     const options = await getStorage('options');
 
-    if (options.announce) {
-      var synth = window.speechSynthesis;
-      var voices = synth.getVoices();
-      var utterThis = new SpeechSynthesisUtterance('New studies available on Prolific.');
-      utterThis.voice = voices[0];
-      synth.speak(utterThis);
+    switch (options.alert) {
+      case 'none':
+        // no sound for you
+        break;
+      case 'sweet-alert-1':
+      case 'sweet-alert-2':
+      case 'sweet-alert-3':
+      case 'sweet-alert-4':
+      case 'sweet-alert-5':
+        const audio = new Audio(`/audio/${option.alert}.wav`);
+        audio.play();
+        break;
+      case 'voice':
+        var synth = window.speechSynthesis;
+        var voices = synth.getVoices();
+        var utterThis = new SpeechSynthesisUtterance('New studies available on Prolific.');
+        utterThis.voice = voices[0];
+        synth.speak(utterThis);
+        break;
     }
   }
 }
@@ -142,10 +155,10 @@ chrome.storage.local.get(null, (items) => {
 
   if (
     !options ||
-    !Object.prototype.hasOwnProperty.call(options, 'announce') ||
+    !Object.prototype.hasOwnProperty.call(options, 'alert') ||
     !Object.prototype.hasOwnProperty.call(options, 'interval')
   ) {
-    chrome.storage.local.set({ options: { announce: true, interval: 60 } });
+    chrome.storage.local.set({ options: { alert: 'voice', interval: 60 } });
   }
 
   chrome.storage.local.set({ studies: {} });
@@ -156,7 +169,7 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 chrome.notifications.onButtonClicked.addListener((notificationId) => {
-  window.open(`https://app.prolific.ac/studies/${notificationId}`);
+  window.open(`https://app.prolific.co/studies/${notificationId}`);
   chrome.notifications.clear(notificationId);
 });
 
@@ -169,13 +182,19 @@ chrome.webRequest.onBeforeSendHeaders.addListener(
 
     if (authorizationHeaderExists) {
       headers = requestHeaders;
-    } else if (headers && method === 'GET') {
+    } else if (
+      headers &&
+      method === 'GET' &&
+      details.url.includes('https://www.prolific.co/api/v1/studies/')
+    ) {
       return { requestHeaders: headers };
     }
 
     return {};
   },
-  { urls: ['https://www.prolific.ac/api/v1/studies*'] },
+  {
+    urls: ['https://*.prolific.co/*'],
+  },
   ['blocking', 'requestHeaders'],
 );
 
