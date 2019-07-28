@@ -76,29 +76,15 @@ const setBadgeError = () => {
 
 function notification(study) {
   chrome.notifications.create(study.id, {
-    type: 'list',
+    type: 'basic',
     title: study.name,
-    message: '',
+    message: 'Hosted by ' + study.researcher.name + 
+    '\nReward ' + toMoney(study.reward) + " | Avg. " + toMoney(study.average_reward_per_hour) + 
+    '\nPlaces ' + (study.total_available_places - study.places_taken),
     iconUrl: '/prolific.png',
-    items: [
-      {
-        title: 'Hosted By',
-        message: study.researcher.name,
-      },
-      {
-        title: 'Reward',
-        message: `${toMoney(study.reward)} | Avg. ${toMoney(
-          study.average_reward_per_hour,
-        )}`,
-      },
-      {
-        title: 'Places',
-        message: `${study.total_available_places - study.places_taken}`,
-      },
-    ],
-    buttons: [{ title: 'Open' }],
   });
 }
+
 
 async function announceStudies(studies) {
   const needAnnouncing = studies.filter((o) => !notified.includes(o.id));
