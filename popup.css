@@ -69,14 +69,6 @@ input, select {
     transition: border-color .2s cubic-bezier(.645,.045,.355,1);
 }
 
-select {
-  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABwAAAAcCAYAAAByDd+UAAAAfklEQVRIie3UwQ2AIAyF4TciI3QT3UQ3xQskmFQobVEP/ZPeSr8bQBRFf2wHsL115wSQyxwGTHSnXbKgojvELGlQDqtD7WLqLErRHpaLcYsM6Aijp4caVI1pUDM2g7phUtQVs6BqTIOasRnUDZOg7lgPXYZx6HKslsD8jdEnXW9Wrh8Ftm/BAAAAAElFTkSuQmCC');
-  background-position: calc(100% - .5rem), 100% 0;
-  background-size: .8rem;
-  background-repeat: no-repeat;
-  padding-right: 30px;
-}
-
 input:hover {
   border-color: #c0c4cc;
 }
