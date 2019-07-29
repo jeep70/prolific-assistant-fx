@@ -43,14 +43,14 @@ function displayChecked() {
     let lastDate = new Date(result.checked);
     let lastTime = lastDate.getTime() / 1000;
     let now = (new Date()).getTime() / 1000;
-    let secSince = Math.round(now-lastTime);
+    let secSince = now-lastTime;
 
     let finalString = "less than a minute ago"
     if (secSince > 60) {
       if (secSince/60 > 1) {
-        finalString = `${secSince/60} minutes ago`;
+        finalString = `${Math.round(secSince/60)} minutes ago`;
       } else {
-        finalString = `${secSince/60} minute ago`;
+        finalString = `${Math.round(secSince/60)} minute ago`;
       }
     }
 
