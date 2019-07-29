@@ -1,7 +1,61 @@
 const toMoney = (n) => (n / 100).toFixed(2);
 
-function displayChecked(checked) {
-  document.getElementById('checked').textContent = `Last Checked: ${checked}`;
+function hideAllScreens() {
+  TweenLite.set(document.getElementById('studies'), {
+    display: "none",
+  })
+  TweenLite.set(document.getElementById('error'), {
+    display: "none",
+  })
+  TweenLite.set(document.getElementById('waiting'), {
+    display: "none",
+  })
+}
+
+function displayCorrectScreen() {
+  hideAllScreens();
+  chrome.storage.local.get('error', function(result) {
+    if (result.error == undefined || result.error == true) {
+      TweenLite.set(document.getElementById('error'), {
+        display: "inherit"
+      });
+    }
+    else {
+      TweenLite.set(document.getElementById('waiting'), {
+        display: "inherit"
+      });
+    }
+
+    chrome.storage.local.get('studies', function(result) {
+      if (result.studies != undefined && result.studies.length > 0) {
+        hideAllScreens();
+        TweenLite.set(document.getElementById('studies'), {
+          display: "visible",
+        })
+      }
+    });
+  });
+
+}
+
+function displayChecked() { 
+  chrome.storage.local.get(null, function(result) {
+    let lastDate = new Date(result.checked);
+    let lastTime = lastDate.getTime() / 1000;
+    let now = (new Date()).getTime() / 1000;
+    let secSince = Math.round(now-lastTime);
+
+    let finalString = "less than a minute ago"
+    if (secSince > 60) {
+      if (secSince/60 > 1) {
+        finalString = `${secSince/60} minutes ago`;
+      } else {
+        finalString = `${secSince/60} minute ago`;
+      }
+    }
+
+  document.getElementById('checked').textContent = `Last checked ${finalString}`;
+  });
 }
 
 function displayOptions(options) {
@@ -71,7 +125,6 @@ chrome.storage.local.get(null, (items) => {
   const { checked, options, studies } = items;
 
   // displayBalance();
-  displayChecked(checked);
   displayOptions(options);
   displayStudies(studies);
 });
@@ -106,3 +159,30 @@ document.addEventListener('change', (event) => {
     }
   }
 });
+
+window.onload = function(){
+  displayChecked();
+  displayCorrectScreen();
+  chrome.storage.onChanged.addListener(function() {
+    displayCorrectScreen();
+    displayChecked();
+  });
+
+  var tween = TweenLite.to(document.getElementById('settings-page'), 0.6, {
+    ease: Power2.easeInOut,
+    right: "0%",
+    paused: true,
+    reversed: true,
+  })
+  document.getElementById('settingsbutton').onclick = function() {
+    tween.paused(false);
+    tween.reversed(!tween.reversed());
+  }
+  document.getElementById('checkbutton').onclick = function() {
+    chrome.runtime.sendMessage({ prolific: true });
+  }
+
+  setInterval(function() {
+    displayChecked();
+  }, 10000);
+}

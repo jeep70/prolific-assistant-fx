@@ -31,7 +31,6 @@ const getIntervalFromStorage = () =>
 const setStudiesToStorage = (studies) => {
   chrome.storage.local.set({
     studies,
-    checked: new Date().toTimeString(),
   });
 };
 
@@ -124,14 +123,19 @@ async function prolific() {
   clearTimeout(timeout);
 
   try {
+    chrome.storage.local.set({ error: false });
     const studies = await fetchStudies();
     setBadgeStudies(studies);
     setStudiesToStorage(studies);
     announceStudies(studies);
   } catch (error) {
     setBadgeError();
+    chrome.storage.local.set({ error: true });
     window.console.error(error);
   }
+  chrome.storage.local.set({
+    checked: new Date().getTime(),
+  });
 
   timeout = setTimeout(prolific, await getIntervalFromStorage());
 }
@@ -148,6 +152,7 @@ chrome.storage.local.get(null, (items) => {
   }
 
   chrome.storage.local.set({ studies: {} });
+  chrome.storage.local.set({ error: undefined })
 });
 
 chrome.runtime.onMessage.addListener((request) => {

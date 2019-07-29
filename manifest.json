@@ -3,9 +3,9 @@
 
   "name": "Prolific Assistant FX",
 
-  "version": "2.0.7.0",
+  "version": "3.0.0",
 
-  "description": "Monitors https://prolific.co/ for new studies. Firefox port of Prolific Assistant by Kadauchi",
+  "description": "Notifies you of new studies from prolific.co",
 
 
   "icons": {

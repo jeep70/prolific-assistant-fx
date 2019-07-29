@@ -3,68 +3,56 @@
 <head>
   <meta charset="utf-8">
 
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <link href="normalize.css" rel="stylesheet">
   <link href="popup.css" rel="stylesheet">
 
+  <script src="TweenLite.min.js" type="module"></script>
+  <script src="CSSPlugin.min.js" type="module"></script>  
   <script src="purify.min.js"></script>
   <script src="popup.js"></script>
 </head>
 
 
 <body>
-  <nav class="navbar navbar-inverse bg-primary p-0 mb-2">
-    <table class="w-100">
-      <tr>
-        <td class="w-25 text-center">
-          <a class="text-white small" href="https://app.prolific.co/studies" target="_blank">Studies</a>
-        </td>
-        <td class="w-50 text-center">
-          <!--<span id="balance" class="text-white small">Loading Balance...</span>-->
-        </td>
-        <td class="w-25 text-center">
-          <a class="text-white small" href="https://app.prolific.co/account/general" target="_blank">Account</a>
-        </td>
-      </tr>
-    </table>
-  </nav>
-
-  <div class="container">
-    <div class="row">
-      <div class="col">
-        <div class="input-group input-group-sm">
-          <div class="input-group-prepend">
-            <span class="input-group-text">Check Interval</span>
-          </div>
+  <header>
+    <a href="https://app.prolific.co/studies">
+      <div class="buttonhovertrigger pointer"></div>
+    </a>
+    <img class="icon center-left" src="prolific.png">
+    <div class="buttonhovertrigger align-right pointer" id="settingsbutton"></div>
+    <img class="icon center-right" src="icons/sliders.svg">
+  </header>
+  <div>
+      <div id="mainpage">
+        <div id="error">
+          <p>Unable to connect to Prolific. Make sure you have a Prolific tab open and logged in.</p>
+        </div>
+        <div id="waiting">
+            <img class="mug" src="https://app.prolific.co/img/mug_steam.99fea686.svg">
+            <p class="subtitle">Waiting for studies.</p>
+        </div>
+        <div id="studies">
+            
+        </div>
+        <button id="checkbutton">Check</button>
+        <p id="checked">Last checked:</p>
+      </div>
+      <div id="settings-page">
+        <div>
+          <p>How often to check for a new survey:</p>
           <input type="number" class="form-control" min="60" id="interval">
         </div>
+        <p>Alert sound to play:</p>
+        <select class="form-control form-control-sm" id="alert">
+          <option value="none">None</option>
+          <option value="voice">Voice</option>
+          <option value="sweet-alert-1">Sweet Alert 1</option>
+          <option value="sweet-alert-2">Sweet Alert 2</option>
+          <option value="sweet-alert-3">Sweet Alert 3</option>
+          <option value="sweet-alert-4">Sweet Alert 4</option>
+          <option value="sweet-alert-5">Sweet Alert 5</option>
+        </select>
       </div>
-      <div class="col">
-        <div class="form-group">
-          <div class="row">
-            <div class="col-3">
-              <label for="alert">Alert</label>
-            </div>
-            <div class="col-9">
-              <select class="form-control form-control-sm" id="alert">
-                <option value="none">None</option>
-                <option value="voice">Voice</option>
-                <option value="sweet-alert-1">Sweet Alert 1</option>
-                <option value="sweet-alert-2">Sweet Alert 2</option>
-                <option value="sweet-alert-3">Sweet Alert 3</option>
-                <option value="sweet-alert-4">Sweet Alert 4</option>
-                <option value="sweet-alert-5">Sweet Alert 5</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
-  <div class="text-center mt-1">
-    <small id="checked"></small>
-  </div>
-  <div id="studies" />
 </body>
 
 </html>
